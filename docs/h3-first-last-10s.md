@@ -6,14 +6,14 @@ This is the exact ComfyUI path that wrote `MoodyH3_FL2V_10s_00001_.mp4` on 2026-
 
 | Role | Local file | Size |
 | --- | --- | --- |
-| First | `C:\\Users\\yangl\\OneDrive\\Desktop\\首帧.png` | 1024x1536, curled sideways |
-| Last | `C:\\Users\\yangl\\OneDrive\\Desktop\\尾帧.png` | 1024x1536, facing camera |
+| First | `C:\Users\yangl\OneDrive\Desktop\首帧.png` | 1024x1536, curled sideways |
+| Last | `C:\Users\yangl\OneDrive\Desktop\尾帧.png` | 1024x1536, facing camera |
 
 Copy into the Comfy input folder (LoadImage only lists this directory):
 
 ```
-C:\\Users\\yangl\\AppData\\Local\\Comfy-Desktop\\ComfyUI-Shared\\input\\first_frame.png
-C:\\Users\\yangl\\AppData\\Local\\Comfy-Desktop\\ComfyUI-Shared\\input\\last_frame.png
+C:\Users\yangl\AppData\Local\Comfy-Desktop\ComfyUI-Shared\input\first_frame.png
+C:\Users\yangl\AppData\Local\Comfy-Desktop\ComfyUI-Shared\input\last_frame.png
 ```
 
 H3 native canvas is a 768px short edge, multiples of 32. Scale both stills to **768x1152**, lanczos, center crop.
@@ -68,13 +68,14 @@ Paste [prompts/fl2v_10s.txt](../prompts/fl2v_10s.txt). Locked camera, no push-in
 
 Queue with Ctrl+Enter. This run took about 5 minutes on RTX 5090.
 
+Or POST [workflows/h3_fl2v_10s_api.json](../workflows/h3_fl2v_10s_api.json) to `http://127.0.0.1:8188/prompt`.
+
 ## 4. Node chain
 
 ```
-LoadImage(first) -> ImageScale 768x1152 -> first_frame \
-LoadImage(last)  -> ImageScale 768x1152 -> last_frame  +-> MiniMaxH3ImageToVideo
-CLIP (minimax) ------------------------------------------+
-Video VAE -----------------------------------------------+
+LoadImage(first) -> ImageScale 768x1152 -> first_frame
+LoadImage(last)  -> ImageScale 768x1152 -> last_frame
+CLIP (minimax) + Video VAE + first/last -> MiniMaxH3ImageToVideo
 
 UNet fl2va -> Turbo LoRA -> BasicScheduler (simple, 8)
                          -> BasicGuider <- positive from MiniMaxH3ImageToVideo
@@ -85,10 +86,8 @@ RandomNoise + KSamplerSelect(res_multistep)
         -> CreateVideo 24fps -> SaveVideo
 ```
 
-API-format graph: [workflows/h3_fl2v_10s_api.json](../workflows/h3_fl2v_10s_api.json). POST that to `http://127.0.0.1:8188/prompt`.
-
 ## 5. Result
 
-`C:\\Users\\yangl\\AppData\\Local\\Comfy-Desktop\\ComfyUI-Shared\\output\\video\\MoodyH3_FL2V_10s_00001_.mp4`
+`C:\Users\yangl\AppData\Local\Comfy-Desktop\ComfyUI-Shared\output\video\MoodyH3_FL2V_10s_00001_.mp4`
 
 Checked frames 0 / 81 / 162 / 242: curled start -> speaking and opening legs -> front-on spread -> last-frame hand pose. Face stayed in the shot.
