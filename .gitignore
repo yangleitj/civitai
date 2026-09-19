@@ -1,0 +1,11 @@
+input/
+output/
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.mp4
+*.mov
+*.wav
+.DS_Store
+Thumbs.db
